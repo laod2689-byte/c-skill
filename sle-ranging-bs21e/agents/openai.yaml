@@ -1,0 +1,3 @@
+﻿display_name: BS21E SLE Ranging
+short_description: Debug BearPi/HiSilicon BS21E 星闪测距, IQ pairing, threshold alarm, and flashing issues.
+default_prompt: Use this skill to inspect a BS21E SLE ranging project, explain the distance alarm flow, and fix IQ pairing, threshold, buzzer, build, or flashing issues safely.
