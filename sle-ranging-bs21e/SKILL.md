@@ -11,8 +11,9 @@ Use this skill for BearPi/HiSilicon BS21E 星闪测距 projects, especially `app
 
 1. Identify the actual build repo, not a mirror or copied sample folder.
 2. Read `PROJECT_MEMORY.md` if present.
-3. Check generated config under `build/config/target_config/bs21e/menuconfig/...` before trusting source defaults.
-4. Separate these layers before changing behavior:
+3. Read `docs/DEBUG_PLAYBOOK.md` if present.
+4. Check generated config under `build/config/target_config/bs21e/menuconfig/...` before trusting source defaults.
+5. Separate these layers before changing behavior:
    - SLEM vendor algorithm smoothing
    - local/remote IQ pairing
    - application jump filter
@@ -43,7 +44,26 @@ For buzzer complaints:
 3. Do not add fixed buzzer duration unless requested.
 4. Buzzer reaction is limited by the next valid ranging result.
 
+## Triage Matrix
+
+- **Stack overflow**: inspect task stack sizes first, especially indicator and UART tasks.
+- **Distance jumps while still**: check IQ quality, stale pairing, algorithm errors, and whether application smoothing was reintroduced.
+- **Buzzer late to stop**: check hysteresis and measurement period before changing GPIO logic.
+- **Threshold ignored**: compare source defaults, Kconfig, generated menuconfig, and runtime logs.
+- **Build fails near patch step**: check Windows file locks before editing C code.
+- **Wrong firmware flashed**: use `application_sign.bin` for normal direct flashing unless the tool requires hex.
+
+## When Editing
+
+- Make surgical changes in `application/samples/products/sle_measure_dis`.
+- Preserve local IQ snapshot plus algorithm busy-drop behavior unless there is a better measured replacement.
+- Do not add IIR/average smoothing unless the user explicitly accepts slower response.
+- Explain alarm enter/exit thresholds whenever changing hysteresis or default threshold.
+- After changing defaults, verify generated config or tell the user it can override the source.
+
 ## Reference Files
 
 - Read `references/pitfalls.md` when diagnosing crashes, queue backlog, stale timestamp, file-lock build errors, or wrong flashing artifacts.
+- Read `references/log-patterns.md` when interpreting serial logs.
+- Read `references/handoff-playbook.md` when onboarding another Codex or preparing a new repo.
 - Read `references/bs21e-sle-measure-dis-memory.md` when taking over the exact project state from the 2.5m buzzer threshold work.

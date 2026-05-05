@@ -37,6 +37,8 @@
 - Application jump filter usually means `MEASURE_DIS_MAX_JUMP_CM`.
 - Hysteresis is not smoothing; it only controls alarm enter/exit points.
 - Do not add extra IIR/average smoothing unless the user explicitly accepts slower response.
+- When the user says "滤波调到 20cm", clarify whether they mean max jump filter or alarm hysteresis.
+- In this project the accepted max jump filter after discussion remained `300cm`.
 
 ## Build and flashing
 - A Windows `WinError 32` during post-build move of `application.bin` usually means file lock, not bad C code.
@@ -54,3 +56,10 @@
 - Indicator task stack overflow was seen earlier; keep task stacks conservative.
 - `g_stack_enable_result` should be wide enough for `errcode_t` values on the server side.
 - Advertisement data lengths should match expected API width; `uint16_t` was used for server adv lengths.
+
+## What made this project stable enough
+- Algorithm input uses a local IQ snapshot, not a mutable global buffer.
+- Remote IQ is ignored while `g_measure_dis_alg_busy` is true.
+- Remote IQ is dropped if the message queue already has backlog.
+- Indicator timeout checks algorithm busy state before clearing valid distance.
+- The alarm decision is kept simple: convert distance to cm, apply jump filter, apply hysteresis, set buzzer state.
